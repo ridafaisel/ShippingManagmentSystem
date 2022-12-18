@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+
+<table>
+    <tr><th>ID</th>
+    <th>Weight <small>(Kg)</small></th>
+    <th>Length <small>(cm)</small></th>
+    <th>width <small>(cm)</small></th>
+    <th>height <small>(cm)</small></th>
+    <th>Date</th>
+    <th>Destination</th>
+    <th>Category</th>
+    <th>Payment</th>
+    <th>Sender_ID</th>
+    <th>Center_ID</th>
+    <th>Staus</th>
+    <th>Reciver_ID</th>
+
+    
+</tr>
+
+
+   
+  <% packages.forEach((package)=>{ %>
+ 
+    <tr>
+        <td> <%= package.Package_ID %>  </td>
+        <td> <%= package.Weight %> </td>
+        <td><%= package.Length %> </td>
+        <td><%= package.Width %> </td>
+        <td><%= package.height %> </td>
+        <td><%= package.Final_Delivery_Date %> </td>
+        <td><%= package.Destination %> </td>
+        <td><%= package.Package_ID %> </td>
+        <td><%= package.Payment %> </td>
+        <td><%= package.Customer_ID %> </td>
+        <td><%= package.Center_ID %> </td>
+        <td><%= package.Status %></td>
+        <td><%= package.Reciver_ID %> </td>
+
+       
+    </tr>
+
+   <% }) %>
+
+  
+
+</table>
+<h1>
+</h1>

@@ -1,6 +1,7 @@
+const { reject } = require('async');
 const { get } = require('cacache');
 const { log, count } = require('console');
-const { stat } = require('fs');
+const { stat, lstat } = require('fs');
 const { maxHeaderSize } = require('http');
 const { resolve } = require('path');
 const { list } = require('tar');
@@ -15,8 +16,9 @@ let db = new sqlite3.Database('shipment.db', sqlite3.OPEN_READWRITNE, (err) => {
     }
     console.log('Connected to the shipments database.');
   });
+sql =''
+  // sql= `SELECT * FROM Last_Status`
 
-  sql=``
   db.all(sql,[],(err,rows)=>{
    
      if(err){
@@ -73,6 +75,39 @@ function addCustomer(City, Fname, Lname, Phone_number,Email,DateOf_Birth){
 }
 // End of Add Customer..
 
+// Get customer 
+function getCustomer(id){
+  sql = `Select * FROM CUSTOMER WHERE Customer_ID = ${id}`
+  return new Promise((resolve,reject)=>{
+    db.all(sql, [] , (err,rows)=>{
+      if(err)
+      reject(err.message)
+
+      resolve(rows)
+    });
+  });
+}
+// end of get customer
+
+// get all customers.
+
+function getAllCustomers() {
+
+  sql= `SELECT * FROM Customer`
+
+  return new Promise((resolve , reject)=>{
+
+    db.all(sql,[],(err,rows)=>{
+      if(err)
+      reject(err.message);
+
+      console.log(rows);
+      resolve(rows)
+    });
+
+  });
+
+}
 
 
 // add Employee
@@ -93,6 +128,22 @@ function addEmployee(Name,City){
   });
 }
 //End of add Employee 
+
+//Edit Employee 
+
+function EditEmployee(Emp_ID,column,value){
+   sql = `UPDATE Packages
+  SET ${column} = "${value}"
+  WHERE Emp_ID = ${Emp_ID};`
+
+  db.run(sql,[],err=>{
+    if(err)
+    console.log(err);
+    console.log("the employee has been updated !");
+  });
+}
+// end of edit Employee
+
 
 // add location 
 function addLocation(Name,Type){
@@ -131,8 +182,9 @@ function addTransport(Loc_from, Loc_to , type , Package_ID){
 
 // add package 
 function addPackage(weight,length , width, height ,Send_Date,Destination,Category,Customer_ID,Center_ID, Reciver_ID,Package_ID){
-  sql = `INSERT INTO packages (weight,length , width, height ,Send_Date,Destination,Category,Customer_ID,Reciver_ID ,Center_ID,Package_ID,Payment) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
+  sql = `INSERT INTO packages (weight,length , width, height ,Final_Delivery_Date,Destination,Category,Customer_ID,Reciver_ID ,Center_ID,Package_ID,Payment) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
 
+  console.log(Category);
   db.run(sql,[weight,length , width, height ,Send_Date,Destination,Category,Customer_ID,Center_ID,Reciver_ID,Package_ID,'NOT paid'],(err)=>{
    
      if(err){
@@ -145,15 +197,33 @@ function addPackage(weight,length , width, height ,Send_Date,Destination,Categor
 }
 // end of add package
 
+// getAll packages 
 
+function getAllPackages(){
+
+  sql = `SELECT * FROM Packages`
+  
+  return new Promise((resolve, reject)=>{
+     
+    db.all(sql ,[] , (err,rows)=>{
+
+        if(err) reject(err);
+
+        resolve(rows)
+    })
+  })
+
+}
+
+// end of get all packages
 
 
 // add Tracing information 
 
-function addTrack (status, Year, day, month ,Package_ID,Location_ID ){
-  sql = `INSERT INTO Track (status, Year, day, month ,Package_ID,Location_ID) VALUES(?,?,?,?,?,?)`
+function addTrack (status, History ,Package_ID,Location_ID ){
+  sql = `INSERT INTO Track (status, History ,Package_ID,Location_ID) VALUES(?,?,?,?)`
 
-  db.run(sql,[status, Year, day, month ,Package_ID,Location_ID],(err)=>{
+  db.run(sql,[status, History,Package_ID,Location_ID],(err)=>{
    
      if(err){
          return console.log(err.message);
@@ -173,10 +243,10 @@ function addTrack (status, Year, day, month ,Package_ID,Location_ID ){
 function addUser(Username, Password){
   sql = `INSERT INTO User(Type, Username, Password , Customer_ID) VALUES(?,?,?,?)`
 
-  db.run(sql,['user', Username, Password ,''],(err)=>{
+  db.run(sql,['User', Username, Password ,''],(err)=>{
    
      if(err){
-         return console.log(' the username is already taken');
+         return console.log(err.message);
      }
 
      else return console.log('The account is set successfully !');
@@ -184,6 +254,67 @@ function addUser(Username, Password){
   });
 }
 // end of add user
+
+// getUser
+function getUser(username,password){
+  sql = `SELECT * FROM User WHERE Username = '${username}' AND Password = '${password}'`
+
+  return new Promise((resolve, reject)=>{
+    
+    db.all(sql , [], (err,rows)=>{
+    
+      if(err){
+        reject('Error in the query: ' + err.message) }
+
+      resolve(rows)
+    
+    })
+
+  })
+ 
+}
+//end of get user
+
+
+// getAll users
+
+function getAllUsers(){
+  sql = `SELECT * FROM User`
+
+  return new Promise((resolve, reject)=>{
+    
+    db.all(sql , [], (err,rows)=>{
+    
+      if(err){
+        reject('Error in the query: ' + err.message) }
+
+      resolve(rows)
+    
+    })
+
+  })
+ 
+}
+// end of get all users
+
+
+//udate user 
+function updateUser(username , column , value){
+  sql = `UPDATE user
+  SET ${column} = "${value}"
+  WHERE Username = '${username}';`
+
+  db.all(sql,[],(err=>{
+    if(err)
+    return console.log(err.message);
+
+    else
+  
+    return console.log('the user was updated')
+    
+  }));
+}
+// end of update users
 
 // Remove user
 function removeUser(username) {
@@ -199,11 +330,47 @@ function removeUser(username) {
 
 // end of remove user
 
+// get package 
+
+function getPackage(package_ID){
+  sql = `SELECT * FROM Packages `
+  return new Promise((resolve,reject)=>{
+
+    db.all(sql,[] , (err,rows)=>{
+      if(err)
+      reject(err.message)
+
+      resolve(rows)
+    })
+
+  });
+   
+}
+
+// end of get package
+
+/// get package bt ID
+function getPackageByCID(CID){
+  sql = `SELECT * FROM Packages WHERE Customer_ID = ${CID} `
+  return new Promise((resolve,reject)=>{
+
+    db.all(sql,[] , (err,rows)=>{
+      if(err)
+      reject(err.message)
+
+      resolve(rows)
+    })
+
+  });
+}
+
+// end of get package by ID
+
 //remove package. 
 function removePackage (Package_ID){
-  sql = `DELETE FROM Packages WHERE Package_ID = ${Package_ID}?`
+  sql = `DELETE FROM Packages WHERE Package_ID = ${Package_ID}`
 
-  db.all(sql,[],(err=>{
+  db.all(sql,[],(err,rows)=>{
     if(err)
     return console.log(err.message);
 
@@ -213,7 +380,7 @@ function removePackage (Package_ID){
       })  
       return console.log('the record was deleted')
     }
-  }));
+  });
 }
 // end of remove package.
 
@@ -221,9 +388,9 @@ function removePackage (Package_ID){
 function udatePackage (Package_ID , column,value){
   sql = `UPDATE Packages
   SET ${column} = "${value}"
-  WHERE Package_ID = ?;`
+  WHERE Package_ID = ${Package_ID};`
 
-  db.all(sql,[Package_ID],(err=>{
+  db.all(sql,[],(err=>{
     if(err)
     return console.log(err.message);
 
@@ -236,21 +403,40 @@ function udatePackage (Package_ID , column,value){
 // end of update package. 
 
 
+//update customer
+
+function udateCustomer (Customer_ID , column,value){
+  sql = `UPDATE Customer
+  SET ${column} = "${value}"
+  WHERE Customer_ID = ${Customer_ID};`
+
+  db.all(sql,[],(err=>{
+    if(err)
+    return console.log(err.message);
+
+    else
+  
+    return console.log('the Customer was updated')
+    
+  }));
+}
+
+//end of update customer
+
+
 // tracing a package 
  function trace(Package_ID){
 
   return new Promise((resolve,reject)=>{
-    sql = `SELECT * FROM Packages WHERE Package_ID = ?`
+    sql = `SELECT * FROM track WHERE Package_ID = ${Package_ID}`
   
-    db.all(sql,[Package_ID],async (err,rows)=>{
+    db.all(sql,[],async (err,rows)=>{
     
      if(err){
-         return reject(err.message); }
-         if(rows.length==0)
+         reject(err.message); }
          console.log('no such package');
 
-        let state = await getLast_state(Package_ID)
-       resolve([rows,state])
+       resolve(rows)
        });
 
   }); 
@@ -282,32 +468,24 @@ function getEmail(Customer_ID){
 // getting the state of a package.
 function getLast_state(package_ID){
 return new Promise((resolve,reject)=>{
-  maxYear = `
-  CREATE VIEW maxYear AS
-  SELECT *
-  FROM Track
-  WHERE year = (SELECT max(year) FROM Track) AND Package_ID = ${package_ID}
+ console.log(package_ID);
+//   sql = `
+//   SELECT *
+//   FROM Track
+//   WHERE History = (SELECT max(History) ) AND Track WHERE Package_ID = ${package_ID})
+// `
+
+sql = `select Package_ID , Status ,max(History)
+from Track
+group by Package_ID
+Having Package_ID = ${package_ID}
 `
-maxMonth = `
-CREATE VIEW maxMonth AS
-SELECT *
-FROM maxYear
-WHERE month = (SELECT max(month) FROM maxYear) `
 
-maxDay= `SELECT *
-FROM maxMonth
-WHERE day = (SELECT max(day) FROM maxMonth)`
 
-db.all(maxDay,[],(err,rows)=>{
+db.all(sql,[],(err,rows)=>{
   if(err)
   reject(err.message);
 
-  rows.forEach(row=>{
-    if(`${row.status}`.trim() == ' Delivered'.trim()){
-      console.log(row);
-      resolve(row)
-    }
-    })
     resolve(rows)
 });
 })
@@ -315,32 +493,42 @@ db.all(maxDay,[],(err,rows)=>{
 // end of getting the state of a package
 
 
-// getting the packages between 2 dates 
-function getPackagesSateus(){
-
-All_states= `SELECT *
-FROM ( SELECT *
-FROM ( SELECT *
-FROM Track
-WHERE year = (SELECT max(year) FROM Track)
-)
-WHERE month = (SELECT max(month) FROM Track))
-WHERE day = (SELECT max(day) FROM Track)`
-
+//
+function getStatusCount() {
+  sql= `SELECT * FROM Last_Status`
 
   return new Promise((resolve,reject)=>{
-   
-    db.all(All_states,[],(err,rows)=>{
-   
-      if(err){
-           reject(err.message);
-      }
-      
-       resolve(rows);
-       
-      })
-  });
-  
+    db.all(sql,[],(err,rows)=>{
+    
+      if(err){rejerct(err.message)}
+      resolve(rows)
+
+    });
+  })
+
+ 
+}
+//
+
+// getting the packages between 2 dates 
+async function getPackagesSateus_date(date1, date2 , status){
+
+  sql = `select Package_ID , Status ,max(History) as 'max'
+  from Track
+  group by Package_ID
+  Having max(History)  between '${date1}' AND '${date2}' AND status= '${status}'  
+  `
+
+  return(new Promise((resolve, reject) => {
+    db.all(sql,[],(err,rows)=>{
+
+      if(err) reject(err.message)
+
+      resolve(rows)
+
+    })
+  }))
+
 }
 // end of getting the packages between 2 dates.
 
@@ -368,6 +556,7 @@ function pay(Package_ID){
 
 // reports:---------------------------------------------------------
 
+// get pait shipments
 function getPaidShipments(){
 
   sql =`SELECT * FROM packages WHERE Payment = "paid" `
@@ -380,12 +569,17 @@ function getPaidShipments(){
 })
 }
 
+// end of get paid shipments
+
+
+
+
+// get packages by Type and date.
 function getPackagesByTypeAndDate (type,date1,date2){
   sql = `SELECT * FROM Packages  WHERE Category = "${type}" AND Final_Delivery_Date BETWEEN "${date1}" AND "${date2}"`
 
-  let count =`SELECT COUNT (*) FROM (${sql}) `
   return new Promise((resolve,reject)=>{
-    db.all(count,[],(err,rows)=>{
+    db.all(sql,[],(err,rows)=>{
       if(err){reject(err.message)}
       else resolve(rows)
     })
@@ -398,9 +592,14 @@ function getPackagesByTypeAndDate (type,date1,date2){
 // get the packages between by category location and status.
 function getPackagesByLoc_cat_sat(location_ID,category,status){
 
+  // sql = `
+  // CREATE VIEW Statuss as 
+  // select Package_ID , Status ,max(History), location_ID
+  // from Track
+  // group by Package_ID
+  // `
 
-
-sql = `SELECT * FROM Packages JOIN Status on packages.package_ID = Status.package_ID WHERE Location_ID = '${location_ID}' AND Category = '${category}' AND Status.status = '${status}'`
+sql = `SELECT * FROM Packages JOIN Statuss on packages.package_ID = Statuss.package_ID WHERE Location_ID = '${location_ID}' AND Category = '${category}' AND Statuss.status = '${status}'`
 
   return new Promise((resolve,reject)=>{
    
@@ -434,6 +633,7 @@ function ListAllPackagesBySenderOrReciver(ID){
 
   });
 }
+
 //end of function
 
 
@@ -464,17 +664,22 @@ function ListAllPackagesBySenderOrReciver(ID){
 
 // console.log(await trace(2));
 // console.log( await getEmail(1));
-// addTrack ("Delivered",2022,1,9,2,3);
-// let state = await getLast_state(1).catch(err=>{console.log(err);});
+// addTrack ("is transit",'2022-03-19',11,7);
+// async function f(){let state = await getLast_state(2).catch(err=>{console.log(err);});
+// console.log(state);
+// }
+// f()
 
-// let allStates = await getPackagesSateus();
-// console.log(allStates);
+// async function s() {
+// let g = await getPackagesSateus_date('2022-02-02', '2022-03-19');
+// console.log(g);
+// } 
 
+// s()
 // paid = await getPaidShipments()
 // console.log(paid);
 
-// package_t_D =await getPackagesByTypeAndDate('Fragile','2022-01-07','2022-01-08');
-// console.log(package_t_D);
+
 
 // let temp = await getPackagesByLoc_cat_sat(2,"Fragile",' in transit');
 // console.log(temp);
@@ -485,6 +690,10 @@ function ListAllPackagesBySenderOrReciver(ID){
 
 
 // addEmployee("Ahmad" , "Jeddah");
+
+// getPackagesSateus_date()
+
+
 
 module.exports = {
   addCenter:addCenter,
@@ -501,11 +710,21 @@ module.exports = {
   trace:trace,
   getEmail:getEmail,
   getLast_state:getLast_state,
-  getPackagesSateus:getPackagesSateus,
   pay:pay,
   getPaidShipments:getPaidShipments,
   getPackagesByTypeAndDate:getPackagesByTypeAndDate,
   getPackagesByLoc_cat_sat:getPackagesByLoc_cat_sat,
-  ListAllPackagesBySenderOrReciver:ListAllPackagesBySenderOrReciver
+  ListAllPackagesBySenderOrReciver:ListAllPackagesBySenderOrReciver,
+  getUser:getUser,
+  getAllCustomers:getAllCustomers,
+  EditEmployee:EditEmployee,
+  getCustomer:getCustomer,
+  udateCustomer:udateCustomer,
+  getAllUsers:getAllUsers,
+  updateUser:updateUser,
+  getAllPackages:getAllPackages,
+  getPackage:getPackage,
+  getPackagesSateus_date:getPackagesSateus_date,
+  getPackageByCID:getPackageByCID
 
 }

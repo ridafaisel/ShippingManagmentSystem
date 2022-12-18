@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+
+<h1>Search packages between 2 dates based on status</h1>
+
+<table>
+    <tr><th>Date 1</th>
+    <th>Date 2 <small></small></th>
+    <th>type <small></small></th>
+    
+</tr>
+
+
+
+ 
+    <tr>
+        <td> <form action="/package-tp-dt" method="post" id='search' ></form> <input type="text" name="date1" value="" form="search" placeholder="yyyy-mm-dd" required> </td>
+        <td> <input type="text" name="date2" value="" form="search" placeholder="yyyy-mm-dd" required></td>
+        <td><select name="type" form="search" required>
+            <option value="Regular">Regular</option>
+            <option value="Fragile">Fragile</option>
+            <option value="Chemical">Chemical</option>
+            <option value="Liquid">Liquid</option>
+          </select> </td>
+
+        <td><input style = 'width:100%' class="sbmt-btn" type="submit" name="action" value="search" form="search"> </td>
+
+        
+    </tr>

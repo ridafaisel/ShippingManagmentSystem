@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+
+<h1>Search packages between 2 dates based on status</h1>
+
+<table>
+    <tr><th>Package_ID </th>
+    <th>status <small></small></th>
+    <th>Date <small></small></th>
+    
+</tr>
+
+
+   <% packages.forEach(package=>{ %>
+
+
+    <tr>
+        <td> <%= package.Package_ID %> </td>
+        <td> <%= package.status %>  </td>
+        <td><%= package.max %> </td>
+
+        
+    </tr>
+
+  <%  }) %>
+
+ 
+    

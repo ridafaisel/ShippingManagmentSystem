@@ -1,0 +1,66 @@
+<%- include('partials/header') %>
+<br>  
+<table>
+    
+    <tr>
+        <th> see your own packages </th>
+    </tr>
+
+    <tr>
+        
+        <td><form action="/see-packages" method="post" id="package"></form><input type="text" name="id" value="" form="package" placeholder="Enter your customer ID"> </form> </td>
+        <td> <input style = 'width:100%' name='action' class="sbmt-btn" type="submit" value="Search" form="package"> </td>
+    </tr>
+   </table>
+
+   <br>  <br> <br> 
+<table>
+    <tr><th> Send a package </th></tr>
+    <tr><th>ID</th>
+        <th>Weight <small>(Kg)</small></th>
+        <th>Length <small>(cm)</small></th>
+        <th>width <small>(cm)</small></th>
+        <th>height <small>(cm)</small></th>
+        <th>Date</th>
+        <th>Destination</th>
+        <th>Category</th>
+        <th>Payment</th>
+        <th>Sender_ID</th>
+        <th>Center_ID</th>
+        <th>Staus</th>
+        <th>Reciver_ID</th>
+    </tr>
+    
+    <tr>
+        <td> <form action="/modify-own-pack" method="post" id='add' ></form> <input type="text" value="#auto" form="add" readonly> </td>
+        <td><input type="text" name="Weight" placeholder="Weight" form="add" required> </td>
+        <td><input type="text" name="Length" placeholder="Length" form="add" required> </td>
+        <td><input type="text" name="Width" placeholder="Width" form="add" required> </td>
+        <td><input type="text" name="height" placeholder="height" form="add" required> </td>
+        <td><input type="text" name="Final_Delivery_Date" placeholder ="yyyy-mm-dd" form="add" required> </td>
+        <td><input type="text" name="Destination" placeholder="Destination" form="add" required >  </td>
+        <td><select name="Category" form="add">
+            <option value="Regular">Regular</option>
+            <option value="Liquid">Liquid</option>
+            <option value="Chemical">Chemical</option>
+            <option value="Fragile">Fragile</option>
+          </select> </td>
+        <td><input type="text" name="Payment" value= "NOT paid" form="add" readonly> </td>
+        <td><input type="text" name="Customer_ID" placeholder = "Customer_ID" form="add" required> </td>
+        <td><input type="text" name="Center_ID" placeholder="Center_ID" form="add" required> </td>
+        <td><input type="text" name="Status" placeholder="auto" form="add" readonly > </td>
+        <td><input type="text" name="Reciver_ID" placeholder="package.Reciver_ID" form="add" required> </td>
+        <td><input style = 'width:100%' class="sbmt-btn" type="submit" name="action" value="send" form="add"> </td>
+        
+    </tr>
+   </table>
+  
+
+   <br>  
+
+  
+  
+
+    
+</body>
+</html>

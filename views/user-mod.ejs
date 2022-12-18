@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+
+<table>
+    <tr><th>Type</th>
+    <th>Username</th>
+    <th>Password</th>
+    <th>Customer ID</th>
+       
+  <% users.forEach((user)=>{ %>
+
+    <tr>
+        
+        <td><form action="/mod-user-form" method="post" id="<%= user.Username  %>"></form><input type="text" name="Type" value="<%= user.Type %>" form="<%= user.Username  %>"> </form> </td>
+        <td><input type="text" name="Username" value="<%= user.Username %>" form="<%= user.Username  %>" readonly> </td>
+        <td><input type="password" name="Password" value="<%= user.Password %>" form="<%= user.Username  %>" readonly> </td>
+        <td><input type="text" name="Customer_ID" value="<%= user.Customer_ID %>" form="<%= user.Username %>" placeholder="not a customer"> </td>
+        <td><input style = 'width:100%' name="action"  class="sbmt-btn" type="submit" value="modify" form="<%= user.Username %>"> </td>
+        <td> <input style = 'width:100%' name='action' class="sbmt-btn" type="submit" value="Remove" form="<%= user.Username %>"> </td>
+    </tr>
+
+   <% }) %>
+
+   <tr>
+    <td> <form action="/add-user" method="post" id="add" ></form> # </td>
+   
+        <td><input type="text" name="Username" value="" form="add" placeholder="username" required> </td>
+        <td><input type="password" name="Password" value="" form="add" placeholder="Password" required> </td>
+        <td></td>
+
+    <td><input style = 'width:100%' class="sbmt-btn" type="submit" value="Add" form="add"> </td>
+    <td></td>
+    
+</tr>
+
+</table>
+<h1>
+</h1>

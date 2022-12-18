@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<table>
+    <tr><th>ID</th>
+    <th>City</th>
+    <th>Frist name</th>
+    <th>Last name</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Date of birth</th></tr>
+
+
+   
+  <% customers.forEach((customer)=>{ %>
+
+    <tr>
+        <td> <form action="/modify-cust" method="post" id='<%= customer.Customer_ID  %>' ></form> <input type="text" name="ID" value="<%= customer.Customer_ID %>" form="<%= customer.Customer_ID  %>" readonly> </td>
+        <td><input type="text" name="city" value="<%= customer.City %>" form="<%= customer.Customer_ID  %>"> </td>
+        <td><input type="text" name="Fname" value="<%= customer.Fname %>" form="<%= customer.Customer_ID  %>"> </td>
+        <td><input type="text" name="Lname" value="<%= customer.Lname %>" form="<%= customer.Customer_ID  %>"> </td>
+        <td><input type="text" name="Phone_number" value="<%= customer.Phone_number %>" form="<%= customer.Customer_ID  %>"> </td>
+        <td><input type="text" name="Email" value="<%= customer.Email %>" form="<%= customer.Customer_ID  %>"> </td>
+        <td><input type="text" name="DateOf_Birth" value="<%= customer.DateOf_Birth %>" form="<%= customer.Customer_ID  %>"> </td>
+        <td><input style = 'width:100%' class="sbmt-btn" type="submit" value="modify" form="<%= customer.Customer_ID  %>"> </td>
+        
+    </tr>
+
+   <% }) %>
+
+   <tr>
+    <td> <form action="/add-cust" method="post" id="add" ></form> # </td>
+    <td><input type="text" name="city" value="" placeholder="city" form="add"> </td>
+    <td><input type="text" name="Fname" value="" placeholder="Fname" form="add"> </td>
+    <td><input type="text" name="Lname" value="" placeholder="Lname" form="add"> </td>
+    <td><input type="text" name="Phone_number" value="" placeholder="Phone : 05xxxx" form="add"> </td>
+    <td><input type="text" name="Email" value="" placeholder="Email" form="add"> </td>
+    <td><input type="text" name="DateOf_Birth" placeholder="yyyy-mm-dd" value="" form="add"> </td>
+    <td><input style = 'width:100%' class="sbmt-btn" type="submit" value="Add" form="add"> </td>
+    
+</tr>
+
+</table>
+<h1>
+</h1>

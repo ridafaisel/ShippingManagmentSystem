@@ -1,0 +1,80 @@
+<%- include('partials/header') %>
+
+<table>
+    <tr><th>ID</th>
+    <th>Weight <small>(Kg)</small></th>
+    <th>Length <small>(cm)</small></th>
+    <th>width <small>(cm)</small></th>
+    <th>height <small>(cm)</small></th>
+    <th>Date</th>
+    <th>Destination</th>
+    <th>Category</th>
+    <th>Payment</th>
+    <th>Sender_ID</th>
+    <th>Center_ID</th>
+    <th>Staus</th>
+    <th>Reciver_ID</th>
+</tr>
+
+
+   
+  <% packages.forEach((package)=>{ %>
+ 
+    <tr>
+        <td> <form action="/modify-pack" method="post" id='<%= package.Package_ID  %>' ></form> <input type="text" name="ID" value="<%= package.Package_ID %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="Weight" value="<%= package.Weight %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="Length" value="<%= package.Length %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="Width" value="<%= package.Width %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="height" value="<%= package.height %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="Final_Delivery_Date" value="<%= package.Final_Delivery_Date %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="Destination" value="<%= package.Destination %>" form="<%= package.Package_ID  %>"> </td>
+        <td><select name="Category" form="<%= package.Package_ID  %>">
+            <option value="Regular">Regular</option>
+            <option value="Liquid">Liquid</option>
+            <option value="Chemical">Chemical</option>
+            <option value="Fragile">Fragile</option>
+          </select> </td>
+        <td><input type="text" name="Payment" value="<%= package.Payment %>" form="<%= package.Package_ID  %>" required> </td>
+        <td><input type="text" name="Customer_ID" value="<%= package.Customer_ID %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><input type="text" name="Center_ID" value="<%= package.Center_ID %>" form="<%= package.Package_ID  %>" readonly> </td>
+        <td><select name="Status" value ='<%= package.Status %>' form="<%= package.Package_ID  %>">
+            <option value="<%= package.Status %>"><%= package.Status %></option>
+            <option value="In tranit">in transit</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Delivered">delayed</option>
+          </select> </td>
+        <td><input type="text" name="Reciver_ID" value="<%= package.Reciver_ID %>" form="<%= package.Package_ID  %>"> </td>
+
+        <td><input style = 'width:100%' class="sbmt-btn" type="submit" name="action" value="modify" form="<%= package.Package_ID  %>"> </td>
+        <td><input style = 'width:100%' class="sbmt-btn" type="submit" name="action" value="remove" form="<%= package.Package_ID  %>"> </td>
+        
+    </tr>
+
+   <% }) %>
+
+   <tr>
+    <td> <form action="/modify-pack" method="post" id='add' ></form> <input type="text" value="#auto" form="add" readonly> </td>
+    <td><input type="text" name="Weight" placeholder="Weight" form="add" required> </td>
+    <td><input type="text" name="Length" placeholder="Length" form="add" required> </td>
+    <td><input type="text" name="Width" placeholder="Width" form="add" required> </td>
+    <td><input type="text" name="height" placeholder="height" form="add" required> </td>
+    <td><input type="text" name="Final_Delivery_Date" placeholder ="yyyy-mm-dd" form="add" required> </td>
+    <td><input type="text" name="Destination" placeholder="Destination" form="add" required >  </td>
+    <td><select name="Category" form="add">
+        <option value="Regular">Regular</option>
+        <option value="Liquid">Liquid</option>
+        <option value="Chemical">Chemical</option>
+        <option value="Fragile">Fragile</option>
+      </select> </td>
+    <td><input type="text" name="Payment" value= "NOT paid" form="add" readonly> </td>
+    <td><input type="text" name="Customer_ID" placeholder = "Customer_ID" form="add" required> </td>
+    <td><input type="text" name="Center_ID" placeholder="Center_ID" form="add" required> </td>
+    <td><input type="text" name="Status" placeholder="auto" form="add" readonly > </td>
+    <td><input type="text" name="Reciver_ID" placeholder="package.Reciver_ID" form="add" required> </td>
+    <td><input style = 'width:100%' class="sbmt-btn" type="submit" name="action" value="add" form="add"> </td>
+    
+</tr>
+
+</table>
+<h1>
+</h1>

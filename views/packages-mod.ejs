@@ -29,7 +29,8 @@
         <td><input type="text" name="Final_Delivery_Date" value="<%= package.Final_Delivery_Date %>" form="<%= package.Package_ID  %>" readonly> </td>
         <td><input type="text" name="Destination" value="<%= package.Destination %>" form="<%= package.Package_ID  %>"> </td>
         <td><select name="Category" form="<%= package.Package_ID  %>">
-            <option value="Regular">Regular</option>
+          <option value="<%= package.Category %>"><%= package.Category %></option> 
+          <option value="Regular">Regular</option>
             <option value="Liquid">Liquid</option>
             <option value="Chemical">Chemical</option>
             <option value="Fragile">Fragile</option>

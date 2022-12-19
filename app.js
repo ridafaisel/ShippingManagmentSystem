@@ -19,7 +19,7 @@ app.set('view engine' , 'ejs')
 ///
 app.get('/', async (req,res)=>{
 
-    res.render('index',{package:{Year:'' , Day: '', month:'',package_ID:'' }});
+    res.render('login');
 
         
     
@@ -226,6 +226,13 @@ app.post('/modify-pack',urlencodedParser,async (req,res)=>{
         res.render('packages-mod', {packages:packages});
     }
 
+    else if (req.body.action == 'send'){
+        console.log(req.body.Category);
+        querys.addPackage(req.body.Weight,req.body.Length , req.body.Width , req.body.height , req.body.Final_Delivery_Date , req.body.Destination , req.body.Category,req.body.Customer_ID,req.body.Center_ID, req.body.Reciver_ID,req.body.Package_ID);
+    
+        res.render('customer');
+    }
+
 })
 ///////
 app.post('modify-own-pack',async (req,res)=>{
@@ -341,6 +348,10 @@ app.post('/customer-opt', urlencodedParser, async (req,res)=>{
          }
 })
 
+
+app.get('/trace', (req,res)=>{
+    res.render('admin-trace')
+} )
 
 
 app.listen(4000,()=>{
